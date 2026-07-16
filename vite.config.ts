@@ -19,5 +19,9 @@ export default defineConfig({
   build: {
     outDir: 'dist', // Output directory
     sourcemap: true, // Generate source maps
+    rollupOptions: {
+      // Prevent Three.js from being tree-shaken out
+      preserveEntrySignatures: 'exports-only',
+    },
   },
 });
