@@ -8,31 +8,31 @@ interface ParticleProps {
 
 export function FloatingParticles({ count = 50 }: ParticleProps) {
   const particlesRef = useRef<THREE.Points>(null);
-  
+
   // Generate random particle positions
   const particlesPosition = useMemo(() => {
     const positions = new Float32Array(count * 3);
-    
+
     for (let i = 0; i < count; i++) {
       const theta = Math.random() * Math.PI * 2;
       const phi = Math.random() * Math.PI;
       const r = 15 + Math.random() * 10;
-      
+
       positions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
       positions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
       positions[i * 3 + 2] = r * Math.cos(phi);
     }
-    
+
     return positions;
   }, [count]);
-  
+
   // Animate particles
-  useFrame((state, delta) => {
+  useFrame((_state, delta) => {
     if (particlesRef.current) {
       particlesRef.current.rotation.y += delta * 0.05;
     }
   });
-  
+
   return (
     <points ref={particlesRef}>
       <bufferGeometry attach="geometry">

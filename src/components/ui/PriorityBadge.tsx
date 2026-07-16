@@ -1,16 +1,19 @@
 import React from 'react';
 import { PRIORITY_CONFIG } from '@/lib/constants';
+import { twMerge } from 'tailwind-merge';
 
 interface PriorityBadgeProps {
   priority: 1 | 2 | 3;
   size?: 'sm' | 'md' | 'lg';
   showLabel?: boolean;
+  className?: string;
 }
 
 export const PriorityBadge: React.FC<PriorityBadgeProps> = ({
   priority,
   size = 'md',
   showLabel = false,
+  className = '',
 }) => {
   const config = PRIORITY_CONFIG[priority];
 
@@ -23,12 +26,15 @@ export const PriorityBadge: React.FC<PriorityBadgeProps> = ({
 
   return (
     <span
-      className={`
+      className={twMerge(
+        `
         ${config.color} ${config.textColor}
         ${sizeStyles[size]}
-        rounded-full font-mono font-medium
         inline-flex items-center gap-1.5
-      `}
+        rounded-full font-mono font-medium
+      `,
+        className
+      )}
     >
       {showLabel && <span>{config.label}</span>}
       <span>{priority}</span>

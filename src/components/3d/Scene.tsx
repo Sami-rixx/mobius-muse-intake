@@ -1,5 +1,5 @@
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, Environment, useGLTF } from '@react-three/drei';
+import { OrbitControls, Environment } from '@react-three/drei';
 import { Suspense } from 'react';
 import { PipelineVisualization } from './PipelineVisualization';
 import { FloatingParticles } from './FloatingParticles';
@@ -17,24 +17,15 @@ export function Scene() {
       gl={{ antialias: true, alpha: true }}
     >
       <ambientLight intensity={0.4} color="#C9A96E" />
-      <directionalLight
-        position={[10, 10, 5]}
-        intensity={1}
-        color="#2FA6A0"
-        castShadow
-      />
-      <directionalLight
-        position={[-10, -10, -5]}
-        intensity={0.3}
-        color="#1B3A5C"
-      />
-      
+      <directionalLight position={[10, 10, 5]} intensity={1} color="#2FA6A0" castShadow />
+      <directionalLight position={[-10, -10, -5]} intensity={0.3} color="#1B3A5C" />
+
       <Suspense fallback={<Loader />}>
         <PipelineVisualization />
         <FloatingParticles count={30} />
         <Environment preset="city" />
       </Suspense>
-      
+
       <OrbitControls
         enableZoom={false}
         enablePan={false}
