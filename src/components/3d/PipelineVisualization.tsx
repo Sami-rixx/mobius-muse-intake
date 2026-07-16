@@ -10,8 +10,16 @@ const NODE_POSITIONS = [
   { x: 8, y: 0, z: 0 },
 ];
 
+// Node configuration type
+interface NodeConfig {
+  label: string;
+  description: string;
+  color: string;
+  subLabel: string;
+}
+
 // Node configurations
-const NODE_CONFIGS = [
+const NODE_CONFIGS: NodeConfig[] = [
   {
     label: 'COLLECT',
     description: 'Web Intake Form',
@@ -33,11 +41,17 @@ const NODE_CONFIGS = [
 ];
 
 // Gate node component
-function GateNode({ position, config }: { position: { x: number; y: number; z: number }; config: any }) {
+function GateNode({
+  position,
+  config,
+}: {
+  position: { x: number; y: number; z: number };
+  config: NodeConfig;
+}) {
   const meshRef = useRef<THREE.Mesh>(null);
-  
+
   // Subtle pulsing animation
-  useFrame((state, delta) => {
+  useFrame((_state, delta) => {
     if (meshRef.current) {
       meshRef.current.rotation.y += delta * 0.2;
     }
@@ -80,7 +94,7 @@ function GateNode({ position, config }: { position: { x: number; y: number; z: n
           />
         </mesh>
       </group>
-      
+
       {/* Label */}
       <Text
         position={[0, -1.5, 0]}
@@ -92,18 +106,12 @@ function GateNode({ position, config }: { position: { x: number; y: number; z: n
       >
         {config.label}
       </Text>
-      
+
       {/* Sub-label */}
-      <Text
-        position={[0, -2, 0]}
-        fontSize={0.25}
-        color="#A0A0A0"
-        anchorX="center"
-        anchorY="middle"
-      >
+      <Text position={[0, -2, 0]} fontSize={0.25} color="#A0A0A0" anchorX="center" anchorY="middle">
         {config.subLabel}
       </Text>
-      
+
       {/* Description */}
       <Text
         position={[0, -2.5, 0]}
@@ -119,18 +127,23 @@ function GateNode({ position, config }: { position: { x: number; y: number; z: n
 }
 
 // Flow line between nodes
-function FlowLine({ from, to, color }: { from: { x: number; y: number; z: number }; to: { x: number; y: number; z: number }; color: string }) {
-  const points = [
-    new THREE.Vector3(from.x, from.y, from.z),
-    new THREE.Vector3(to.x, to.y, to.z),
-  ];
-  
+function FlowLine({
+  from,
+  to,
+  color,
+}: {
+  from: { x: number; y: number; z: number };
+  to: { x: number; y: number; z: number };
+  color: string;
+}) {
+  const points = [new THREE.Vector3(from.x, from.y, from.z), new THREE.Vector3(to.x, to.y, to.z)];
+
   return (
     <line>
       <bufferGeometry attach="geometry">
         <bufferAttribute
           attach="attributes-position"
-          array={new Float32Array(points.flatMap(p => [p.x, p.y, p.z]))}
+          array={new Float32Array(points.flatMap((p) => [p.x, p.y, p.z]))}
           count={2}
           itemSize={3}
         />
@@ -144,25 +157,23 @@ function FlowLine({ from, to, color }: { from: { x: number; y: number; z: number
 function MobiusStrip() {
   const geometry = new THREE.BufferGeometry();
   const vertices = [];
-  const u = 0;
-  const v = 0;
-  
+
   // Create a simple Möbius strip
   for (let i = 0; i <= 100; i++) {
     const theta = (i / 100) * Math.PI * 2;
     const phi = (i / 100) * Math.PI;
     const r = 20;
-    
+
     // Möbius strip parametric equations
     const x = r * Math.cos(theta);
     const y = r * Math.sin(theta);
     const z = (r / 2) * Math.sin(phi) * Math.cos(theta / 2);
-    
+
     vertices.push(x, y, z);
   }
-  
+
   geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(vertices), 3));
-  
+
   return (
     <lineLoop>
       <bufferGeometry attach="geometry">
@@ -183,16 +194,16 @@ export function PipelineVisualization() {
     <group>
       {/* Möbius strip in background */}
       <MobiusStrip />
-      
+
       {/* Pipeline nodes */}
       {NODE_POSITIONS.map((position, index) => (
         <GateNode key={index} position={position} config={NODE_CONFIGS[index]} />
       ))}
-      
+
       {/* Flow lines */}
       <FlowLine from={NODE_POSITIONS[0]} to={NODE_POSITIONS[1]} color="#2FA6A0" />
       <FlowLine from={NODE_POSITIONS[1]} to={NODE_POSITIONS[2]} color="#C9A96E" />
-      
+
       {/* Loop back connection (subtle) */}
       <FlowLine from={NODE_POSITIONS[2]} to={NODE_POSITIONS[0]} color="#1B3A5C" />
     </group>

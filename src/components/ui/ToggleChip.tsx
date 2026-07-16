@@ -9,6 +9,7 @@ interface ToggleChipProps {
   onClick: () => void;
   disabled?: boolean;
   size?: 'sm' | 'md' | 'lg';
+  className?: string;
 }
 
 export const ToggleChip: React.FC<ToggleChipProps> = ({
@@ -18,6 +19,7 @@ export const ToggleChip: React.FC<ToggleChipProps> = ({
   onClick,
   disabled = false,
   size = 'md',
+  className = '',
 }) => {
   // Size styles
   const sizeStyles = {
@@ -46,11 +48,12 @@ export const ToggleChip: React.FC<ToggleChipProps> = ({
       onClick={onClick}
       disabled={disabled}
       className={twMerge(
-        'rounded-full font-medium transition-all cursor-pointer',
+        'cursor-pointer rounded-full font-medium transition-all',
         'focus:outline-none focus:ring-2 focus:ring-brushedBrass focus:ring-offset-2',
-        'disabled:opacity-50 disabled:cursor-not-allowed',
+        'disabled:cursor-not-allowed disabled:opacity-50',
         sizeStyles[size],
-        getChipStyles()
+        getChipStyles(),
+        className
       )}
     >
       {label}
